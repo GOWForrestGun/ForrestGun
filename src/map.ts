@@ -12,14 +12,13 @@ export class Map extends Mesh {
         this.CreateMap(scene);
     }
 
-    CreateMap(scene: Scene): void {
-        SceneLoader.ImportMesh("", "./models/", "mapForrestGun.glb", scene, (meshes) => {
-            console.log("meshes",meshes);
-            meshes.forEach((mesh) => {
-                mesh.checkCollisions = true;
-            });
-            
-        });
+    async CreateMap(scene: Scene): Promise<void> {
+        const {meshes} = await SceneLoader.ImportMeshAsync("", "./models/", "mapForrestGun.glb", scene);
+        console.log("meshes",meshes);
+        meshes.map((mesh) => {
+            mesh.checkCollisions = true;
+        })
+        
     }
 
 }

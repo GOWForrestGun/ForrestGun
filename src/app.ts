@@ -4,6 +4,7 @@ import "@babylonjs/loaders/glTF";
 import { Engine, Scene, ArcRotateCamera, Vector3, HemisphericLight, Mesh, MeshBuilder, SceneLoader } from "@babylonjs/core";
 import "@babylonjs/loaders"
 import { Map } from "./map";
+import { FPSCharacter } from "./fpsCharacter";
 
 
 class App{
@@ -21,7 +22,12 @@ class App{
         const engine = new Engine(canvas, true);
         const scene = new Scene(engine);
 
-        this.CreateCamera(scene);
+        const framesPerSecond = 60;
+        const gravity = -9.81;
+        scene.gravity = new Vector3(0, gravity / framesPerSecond, 0);
+        scene.collisionsEnabled = true;
+
+        const character = new FPSCharacter(scene);
         const map = new Map(scene);
         new HemisphericLight("hemi", new Vector3(0, 1, 0), scene);
 
@@ -30,12 +36,7 @@ class App{
         if (evt.button === 1) engine.exitPointerlock();
         };
 
-        const framesPerSecond = 60;
-        const gravity = -9.81;
-        scene.gravity = new Vector3(0, gravity / framesPerSecond, 0);
-        scene.collisionsEnabled = true;
-        //add sphere to scene in 0 0 0
-
+        
         // hide/show the Inspector
         window.addEventListener("keydown", (ev) => {
             // Shift+Ctrl+Alt+I
@@ -52,15 +53,6 @@ class App{
         engine.runRenderLoop(() => {
             scene.render();
         });
-    }
-
-    CreateCamera(scene: Scene): void {
-        // create a FreeCamera, and set its position to (x:0, y:5, z:-10)
-        var camera = new ArcRotateCamera("camera1", 0, 0, 10, new Vector3(0, 0, 0), scene);
-        // target the camera to scene origin
-        camera.setTarget(Vector3.Zero());
-        // attach the camera to the canvas
-        camera.attachControl(scene.getEngine().getRenderingCanvas(), true);
     }
 }
 new App();
