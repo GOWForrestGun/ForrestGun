@@ -1,9 +1,14 @@
 import "@babylonjs/core/Debug/debugLayer";
 import "@babylonjs/inspector";
 import "@babylonjs/loaders/glTF";
-import { Engine, Scene, ArcRotateCamera, Vector3, HemisphericLight, Mesh, MeshBuilder } from "@babylonjs/core";
+import { Engine, Scene, ArcRotateCamera, Vector3, HemisphericLight, Mesh, MeshBuilder, SceneLoader } from "@babylonjs/core";
+import "@babylonjs/loaders"
+import { Map } from "./map";
 
-class App {
+
+class App{
+
+
     constructor() {
         // create the canvas html element and attach it to the webpage
         var canvas = document.createElement("canvas");
@@ -13,13 +18,23 @@ class App {
         document.body.appendChild(canvas);
 
         // initialize babylon scene and engine
-        var engine = new Engine(canvas, true);
-        var scene = new Scene(engine);
+        const engine = new Engine(canvas, true);
+        const scene = new Scene(engine);
 
-        var camera: ArcRotateCamera = new ArcRotateCamera("Camera", Math.PI / 2, Math.PI / 2, 2, Vector3.Zero(), scene);
-        camera.attachControl(canvas, true);
-        var light1: HemisphericLight = new HemisphericLight("light1", new Vector3(1, 1, 0), scene);
-        var sphere: Mesh = MeshBuilder.CreateSphere("sphere", { diameter: 1 }, scene);
+        this.CreateCamera(scene);
+        const map = new Map(scene);
+        new HemisphericLight("hemi", new Vector3(0, 1, 0), scene);
+
+        scene.onPointerDown = (evt) => {
+        if (evt.button === 0) engine.enterPointerlock();
+        if (evt.button === 1) engine.exitPointerlock();
+        };
+
+        const framesPerSecond = 60;
+        const gravity = -9.81;
+        scene.gravity = new Vector3(0, gravity / framesPerSecond, 0);
+        scene.collisionsEnabled = true;
+        //add sphere to scene in 0 0 0
 
         // hide/show the Inspector
         window.addEventListener("keydown", (ev) => {
@@ -37,6 +52,15 @@ class App {
         engine.runRenderLoop(() => {
             scene.render();
         });
+    }
+
+    CreateCamera(scene: Scene): void {
+        // create a FreeCamera, and set its position to (x:0, y:5, z:-10)
+        var camera = new ArcRotateCamera("camera1", 0, 0, 10, new Vector3(0, 0, 0), scene);
+        // target the camera to scene origin
+        camera.setTarget(Vector3.Zero());
+        // attach the camera to the canvas
+        camera.attachControl(scene.getEngine().getRenderingCanvas(), true);
     }
 }
 new App();

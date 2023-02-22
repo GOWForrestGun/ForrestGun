@@ -6,7 +6,7 @@
   "scripts": {
     "build": "webpack",
     "start": "webpack-dev-server --port 8080"
-},
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/GOWForrestGun/ForrestGun.git"
@@ -26,5 +26,8 @@
     "webpack": "^5.75.0",
     "webpack-cli": "^5.0.1",
     "webpack-dev-server": "^4.11.1"
+  },
+  "dependencies": {
+    "@babylonjs/loaders": "^5.47.1"
   }
 }
