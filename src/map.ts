@@ -14,7 +14,6 @@ export class Map extends Mesh {
 
     async CreateMap(scene: Scene): Promise<void> {
         const {meshes} = await SceneLoader.ImportMeshAsync("", "./models/", "mapForrestGun.glb", scene);
-        console.log("meshes",meshes);
         meshes.map((mesh) => {
             mesh.checkCollisions = true;
         })
